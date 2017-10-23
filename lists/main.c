@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
 
 
 typedef struct Node_s {
@@ -48,8 +50,9 @@ int deleteByValue(Node_t ** head, int value){
            tPrev=tCurr;
            tCurr=tPrev->next;
        }
-       return -1;//not found
+       return 1;//not found
    }
+   return -1;//empty list
 }
 
 void traverse(Node_t * node){
@@ -59,18 +62,73 @@ void traverse(Node_t * node){
     }
 }
 
+void traverse_reverse(Node_t * node){
+    if(node){
+        traverse_reverse(node->next);
+        printf("%d\n", node->data);
+    }
+}
+
+int count_nodes(Node_t * node){
+    if(node){
+        return(count_nodes(node->next) + 1);
+    }
+    return(0);//end of list, or emty list
+}
+
+Node_t * getN(Node_t * head, int n){
+    int count=0;
+    Node_t * current = head;
+    while (current){
+        if(count==n){
+            return current;
+        }
+        count++;
+        current=current->next;
+    }
+    //failure
+    assert(0);
+}
+
+void insert(Node_t ** head, int pos, int value){
+    Node_t * n =(Node_t*)malloc(sizeof(Node_t));
+    n->data=value;
+    Node_t * temp =(getN(*head, pos-1));
+    n->next=temp->next;
+    temp->next=n;
+}
+
+void reverse(Node_t ** head){
+    Node_t * prev = NULL;
+    Node_t *curr = *head;
+    Node_t *next = (*head)->next;
+    while(curr){
+        next=curr->next;
+        curr->next=prev;
+        prev=curr;
+        curr=next;
+    }
+    *head=prev;
+}
+
 int main(void)
 {
     Node_t * head = NULL;
-    push(&head, 1);
-    push(&head, 2);
+    printf("Nodes: %d\n", count_nodes(head));
+    append(&head, 4);
+    append(&head, 5);
+    append(&head, 6);
+    traverse(head);
+    printf("\n");
     push(&head, 3);
-    append(&head, 10);
-    append(&head, 9);
-    append(&head, 8);
+    push(&head, 2);
+    push(&head, 1);
     traverse(head);
-    deleteByValue(&head, 8);
+    printf("\n");
+    reverse(&head);
     traverse(head);
+    printf("\n");
+
     return 0;
 }
 
