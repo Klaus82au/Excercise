@@ -8,19 +8,12 @@ typedef struct Node_s {
     int data;
 } Node_t;
 
-void push(Node_t** head, int value){
-    if ((*head)==NULL){//list is empty
-        *head = (Node_t*)malloc(sizeof(Node_t));
-        (*head)->data=value;
-        (*head)->next=NULL;
-    } else {
-        Node_t * newn = (Node_t*)malloc(sizeof(Node_t));
-        newn->next=*head;
-        newn->data=value;
-        *head = newn;
-    }
+void push(Node_t ** head, int value){
+    Node_t * t = (Node_t*)malloc(sizeof(Node_t));
+    t->next=*head;
+    t->data=value;
+    (*head)=t;
 }
-
 void append(Node_t ** head, int value){
     if ((*head)==NULL){//list is empty
         *head = (Node_t*)malloc(sizeof(Node_t));
@@ -111,6 +104,20 @@ void reverse(Node_t ** head){
     *head=prev;
 }
 
+Node_t * getMiddle(Node_t * head){
+    Node_t * slow=head;
+    Node_t * fast=head;
+    int count=0;
+    while(fast->next){
+        if(count%2==0){
+            slow=slow->next;
+        }
+        count++;
+        fast=fast->next;
+    }
+    return slow;
+}
+
 int main(void)
 {
     Node_t * head = NULL;
@@ -125,10 +132,10 @@ int main(void)
     push(&head, 1);
     traverse(head);
     printf("\n");
-    reverse(&head);
+//    reverse(&head);
     traverse(head);
     printf("\n");
-
+    printf("middle = %d", getMiddle(head)->data);
     return 0;
 }
 
